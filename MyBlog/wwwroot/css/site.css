@@ -91,3 +91,7 @@ body {
 .details{
     width: 100%;
 }
+
+.padding-m0{
+    padding: 0;
+}
