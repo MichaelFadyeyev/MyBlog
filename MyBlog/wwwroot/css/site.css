@@ -71,19 +71,21 @@ body {
 }
 
 /* ================================================ */
-.post{
+.card-img{
     float:left;
     width: 20%;
     margin-right: 30px;
 }
 
-.my-card{
-    width: 50%;
+.label-img{
+    float: none;
+    display: block;
+    width: 100%;
+    margin: 5px 0;
 }
 
-.card-body img{
-    width: 20%;
-    
+.my-card {
+    margin: 15px auto;
 }
 
 .details{

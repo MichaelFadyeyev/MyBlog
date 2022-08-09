@@ -23,8 +23,7 @@
     </div>
 </form>
 
-
-<table class="table">
+@*<table class="table">
     <thead>
         <tr>
             <th>Зображення</th>
@@ -62,7 +61,35 @@
             </tr>
         }
     </tbody>
-</table>
+</table>*@
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-sm-6 col-md-4">
+            <div class="card my-card"@* style="width: 100%;"*@>
+                <div class="card-header">
+                    @Html.DisplayFor(modelItem => item.PublishDate)
+                    @Html.DisplayFor(modelItem => item.PublishTime)
+                </div>
+                <div class="card-body">
+                    <img src="@Html.DisplayFor(modelItem => item.ImagePath)" alt="." class="card-img" />
+                    <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
+                    <p class="card-text">@Html.DisplayFor(modelItem => item.Description)</p>
+                    <a asp-action="Details" asp-route-id="@item.Id">Деталі</a>
+                </div>
+                <div class="card-footer text-muted">
+                    <a a asp-action="Index" asp-controller="Comments" asp-route-id="@item.Id">Коментарі</a>
+                    |
+                    <a a asp-action="Edit" asp-route-id="@item.Id">Редагування</a>
+                    |
+                    <a a asp-action="Delete" asp-route-id="@item.Id">Видалення</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
 
 <br />
 

@@ -20,7 +20,7 @@ namespace MyBlog.Controllers
         private readonly IWebHostEnvironment _env;
 
         private readonly string[] allowedExt = new string[] { ".jpg", ".jpeg", ".png", ".bmp", ".gif" };
-
+        private string defaultImagePath = "/files/default_image.jpg";
         public PostsController(ApplicationDbContext context, IWebHostEnvironment env)
         {
             _context = context;
@@ -32,7 +32,7 @@ namespace MyBlog.Controllers
         {
             // 1 Формування колекції публікацій для виведення
             var posts = _context.Posts.Include(p => p.Category).ToList();
-            if(categoryId !=null && categoryId !=0 )
+            if (categoryId != null && categoryId != 0)
             {
                 posts = posts.Where(p => p.CategoryId == categoryId).ToList(); // пости певної категорії
             }
@@ -115,13 +115,14 @@ namespace MyBlog.Controllers
                             await uploadFile.CopyToAsync(fs);
 
                         post.ImagePath = path;
-                        _context.Posts.Add(post);
-                        await _context.SaveChangesAsync();
-                        return RedirectToAction(nameof(Index));
+
                     }
-                    else return RedirectToAction(nameof(ExtensionError), "Errors");
+                    else post.ImagePath = defaultImagePath;
                 }
-                else return RedirectToAction(nameof(UploadError), "Errors");
+                else post.ImagePath = defaultImagePath;
+                _context.Posts.Add(post);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
             // ->
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", post.CategoryId);
@@ -141,6 +142,8 @@ namespace MyBlog.Controllers
             {
                 return NotFound();
             }
+            if (post.ImagePath != null) ViewBag.ImagePath = post.ImagePath;
+
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", post.CategoryId);
             return View(post);
         }
@@ -150,7 +153,7 @@ namespace MyBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Content,PublishDate,PublishTime,ImagePath,CategoryId")] Post post)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Content,PublishDate,PublishTime,ImagePath,CategoryId")] Post post, IFormFile uploadFile)
         {
             if (id != post.Id)
             {
@@ -161,6 +164,21 @@ namespace MyBlog.Controllers
             {
                 try
                 {
+                    if (uploadFile != null)
+                    {
+                        string name = uploadFile.FileName;
+                        string ext = Path.GetExtension(uploadFile.FileName);
+                        if (allowedExt.Contains(ext))
+                        {
+                            string path = $"/files/{name}";
+                            string serverPath = _env.WebRootPath + path;
+                            using (FileStream fs = new FileStream(serverPath, FileMode.Create, FileAccess.Write))
+                                await uploadFile.CopyToAsync(fs);
+
+                            post.ImagePath = path;
+
+                        }
+                    }
                     _context.Update(post);
                     await _context.SaveChangesAsync();
                 }
@@ -233,7 +251,7 @@ namespace MyBlog.Controllers
         {
             ViewData["message"] = "Помилка редагування публікації";
             return View();
-        } 
+        }
         #endregion
     }
 }

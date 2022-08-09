@@ -1,13 +1,13 @@
 ﻿@model MyBlog.Models.Post
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Редагування публікації";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Edit</h1>
+<h1>Редагування публікації</h1>
 
-<h4>Post</h4>
+<h4>Публікація</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -40,26 +40,33 @@
                 <span asp-validation-for="PublishTime" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ImagePath" class="control-label"></label>
-                <input asp-for="ImagePath" class="form-control" />
+                <label asp-for="ImagePath" class="control-label">
+                    Зображення
+                    <img src="@Model.ImagePath" alt="." class="card-img label-img" />
+                </label>
+                <input asp-for="ImagePath" class="form-control" type="hidden"/>
+                <input asp-for="ImagePath" class="form-control" type="file" name="uploadFile" />
                 <span asp-validation-for="ImagePath" class="text-danger"></span>
+
             </div>
             <div class="form-group">
-                <label asp-for="CategoryId" class="control-label"></label>
+                <label asp-for="CategoryId" class="control-label">Категорія</label>
                 <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Зберегти зміни" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Назад до списку публікацій</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }
