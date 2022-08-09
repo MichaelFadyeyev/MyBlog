@@ -77,6 +77,13 @@ body {
     margin-right: 30px;
 }
 
+.label-img{
+    float: none;
+    display: block;
+    width: 100%;
+    margin: 5px 0;
+}
+
 .my-card {
     margin: 15px auto;
 }
