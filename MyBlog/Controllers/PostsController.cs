@@ -141,6 +141,8 @@ namespace MyBlog.Controllers
             {
                 return NotFound();
             }
+            if(post.ImagePath != null) ViewBag.ImagePath = post.ImagePath;
+
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", post.CategoryId);
             return View(post);
         }
@@ -150,7 +152,7 @@ namespace MyBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Content,PublishDate,PublishTime,ImagePath,CategoryId")] Post post)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Content,PublishDate,PublishTime,ImagePath,CategoryId")] Post post, IFormFile uploadFile)
         {
             if (id != post.Id)
             {
@@ -161,6 +163,21 @@ namespace MyBlog.Controllers
             {
                 try
                 {
+                    if (uploadFile != null)
+                    {
+                        string name = uploadFile.FileName;
+                        string ext = Path.GetExtension(uploadFile.FileName);
+                        if (allowedExt.Contains(ext))
+                        {
+                            string path = $"/files/{name}";
+                            string serverPath = _env.WebRootPath + path;
+                            using (FileStream fs = new FileStream(serverPath, FileMode.Create, FileAccess.Write))
+                                await uploadFile.CopyToAsync(fs);
+
+                            post.ImagePath = path;
+
+                        }
+                    }
                     _context.Update(post);
                     await _context.SaveChangesAsync();
                 }
