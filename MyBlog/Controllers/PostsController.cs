@@ -20,7 +20,7 @@ namespace MyBlog.Controllers
         private readonly IWebHostEnvironment _env;
 
         private readonly string[] allowedExt = new string[] { ".jpg", ".jpeg", ".png", ".bmp", ".gif" };
-
+        private string defaultImagePath = "/files/default_image.jpg";
         public PostsController(ApplicationDbContext context, IWebHostEnvironment env)
         {
             _context = context;
@@ -32,7 +32,7 @@ namespace MyBlog.Controllers
         {
             // 1 Формування колекції публікацій для виведення
             var posts = _context.Posts.Include(p => p.Category).ToList();
-            if(categoryId !=null && categoryId !=0 )
+            if (categoryId != null && categoryId != 0)
             {
                 posts = posts.Where(p => p.CategoryId == categoryId).ToList(); // пости певної категорії
             }
@@ -115,13 +115,14 @@ namespace MyBlog.Controllers
                             await uploadFile.CopyToAsync(fs);
 
                         post.ImagePath = path;
-                        _context.Posts.Add(post);
-                        await _context.SaveChangesAsync();
-                        return RedirectToAction(nameof(Index));
+
                     }
-                    else return RedirectToAction(nameof(ExtensionError), "Errors");
+                    else post.ImagePath = defaultImagePath;
                 }
-                else return RedirectToAction(nameof(UploadError), "Errors");
+                else post.ImagePath = defaultImagePath;
+                _context.Posts.Add(post);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
             // ->
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", post.CategoryId);
@@ -141,7 +142,7 @@ namespace MyBlog.Controllers
             {
                 return NotFound();
             }
-            if(post.ImagePath != null) ViewBag.ImagePath = post.ImagePath;
+            if (post.ImagePath != null) ViewBag.ImagePath = post.ImagePath;
 
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", post.CategoryId);
             return View(post);
@@ -250,7 +251,7 @@ namespace MyBlog.Controllers
         {
             ViewData["message"] = "Помилка редагування публікації";
             return View();
-        } 
+        }
         #endregion
     }
 }
