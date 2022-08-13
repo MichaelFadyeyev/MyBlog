@@ -40,21 +40,17 @@ namespace MyBlog.Controllers
             // 2 розділення колекції на сторінки пагінації
             int pageSize = 3; // кількість постів на сторінці
             int count = posts.Count;
+            var items = posts.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
             // 3 Формування колекції категорії для створення фільтру:
             List<Category> categories = await _context.Categories.ToListAsync();
-            categories.Insert(0, new Category()
-            {
-                Id = 0,
-                Name = "Всі категорії"
-            });
-            var items = posts.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            categories.Insert(0, new Category() { Id = 0, Name = "Всі категорії" });
 
             // 4 Створення менеджера  пагінації
-            PageViewModel paginator = new PageViewModel(count, pageNumber, pageSize);
+            PageViewModel paginator = new (count, pageNumber, pageSize);
 
             // 5 Створення агрегуючої моделі
-            PostsViewModel viewModel = new PostsViewModel()
+            PostsViewModel viewModel = new()
             {
                 Posts = items,
                 Paginator = paginator,
@@ -63,10 +59,10 @@ namespace MyBlog.Controllers
 
 
             // ->
-            var applicationDbContext = _context.Posts.Include(p => p.Category);
-            return View(await applicationDbContext.ToListAsync());
-        }
 
+            return View(viewModel);
+        }
+         
         // GET: Posts/Details/5
         public async Task<IActionResult> Details(int? id)
         {

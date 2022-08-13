@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MyBlog.Models.Post>
+﻿@model MyBlog.ViewModels.PostsViewModel
 @addTagHelper *, MyBlog
 
 @{
@@ -17,13 +17,13 @@
     <div class="form-inline form-group">
         <label class="control-label">Категорія:</label>
         &nbsp;&nbsp;
-        @*<select name="categoryId" asp-items="Model.Categories" class="form-control"></select>*@
+        <select name="categoryId" asp-items="Model.Categories" class="form-control"></select>
         &nbsp;&nbsp;&nbsp;
         <input type="submit" value="Обрати" class="btn btn-success" />
     </div>
 </form>
 
-@*<table class="table">
+<table class="table">
     <thead>
         <tr>
             <th>Зображення</th>
@@ -35,11 +35,12 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Posts)
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ImagePath)
+                    @*@Html.DisplayFor(modelItem => item.ImagePath)*@
+                    <img src="@Html.DisplayFor(modelItem => item.ImagePath)" alt="." style="width: 50%" @*class="card-img"*@/>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Category.Name)
@@ -61,10 +62,10 @@
             </tr>
         }
     </tbody>
-</table>*@
+</table>
 
 <div class="row">
-    @foreach (var item in Model)
+    @foreach (var item in Model.Posts)
     {
         <div class="col-sm-6 col-md-4">
             <div class="card my-card"@* style="width: 100%;"*@>
@@ -94,5 +95,5 @@
 <br />
 
 <!-- Pagination Controls-->
-@*<page-link page-model="Model.Paginator" page-action="Index"></page-link>*@
+<page-link page-model="Model.Paginator" page-action="Index"></page-link>
 <!-- /Pagination Controls-->

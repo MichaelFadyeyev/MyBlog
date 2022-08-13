@@ -13,14 +13,9 @@ namespace MyBlog.ViewModels
 
         }
 
-        public bool HasPreviousPage
-        {
-            get { return (PageNumber > 1); }
-        }
+        public bool HasPreviousPage => PageNumber > 1;
 
-        public bool HasNextPage
-        {
-            get { return (PageNumber < TotalPages); }
-        }
+        public bool HasNextPage => PageNumber < TotalPages;
+
     }
 }
