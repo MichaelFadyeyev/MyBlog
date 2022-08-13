@@ -15,11 +15,11 @@ namespace MyBlog.TagHelpers
     public class PageLinkTagHelper : TagHelper
     {
 
-        private IUrlHelperFactory _urlHelperFactory;
+        public IUrlHelperFactory _urlHelperFactory;
 
         [ViewContext]
         [HtmlAttributeNotBound]
-        private ViewContext ViewContext { get; set; }
+        public ViewContext ViewContext { get; set; }
 
         public PageViewModel PageModel { get; set; }
         public string PageAction { get; set; }
